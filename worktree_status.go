@@ -336,11 +336,11 @@ func (w *Worktree) AddWithOptions(opts *AddOptions) error {
 }
 
 func (w *Worktree) doAdd(path string, ignorePattern []gitignore.Pattern) (plumbing.Hash, error) {
-	s, err := w.Status()
+/*	s, err := w.Status()
 	if err != nil {
 		return plumbing.ZeroHash, err
 	}
-
+*/
 	idx, err := w.r.Storer.Index()
 	if err != nil {
 		return plumbing.ZeroHash, err
@@ -351,9 +351,9 @@ func (w *Worktree) doAdd(path string, ignorePattern []gitignore.Pattern) (plumbi
 
 	fi, err := w.Filesystem.Lstat(path)
 	if err != nil || !fi.IsDir() {
-		added, h, err = w.doAddFile(idx, s, path, ignorePattern)
+		added, h, err = w.doAddFile(idx, nil, path, ignorePattern)
 	} else {
-		added, err = w.doAddDirectory(idx, s, path, ignorePattern)
+		added, err = w.doAddDirectory(idx, nil, path, ignorePattern)
 	}
 
 	if err != nil {
@@ -424,10 +424,10 @@ func (w *Worktree) AddGlob(pattern string) error {
 // doAddFile create a new blob from path and update the index, added is true if
 // the file added is different from the index.
 func (w *Worktree) doAddFile(idx *index.Index, s Status, path string, ignorePattern []gitignore.Pattern) (added bool, h plumbing.Hash, err error) {
-	if s.File(path).Worktree == Unmodified {
+/*	if s.File(path).Worktree == Unmodified {
 		return false, h, nil
 	}
-	if len(ignorePattern) > 0 {
+*/	if len(ignorePattern) > 0 {
 		m := gitignore.NewMatcher(ignorePattern)
 		matchPath := strings.Split(path, string(os.PathSeparator))
 		if m.Match(matchPath, true) {
